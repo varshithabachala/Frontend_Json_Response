@@ -342,6 +342,21 @@
     header{flex-direction:column;align-items:flex-start;}
     .last-updated{text-align:left;}
   }
+  .csv-btn {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 6px 12px;
+  font-size: 12px;
+  color: var(--text, #e6edf3);
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 6px;
+  text-decoration: none;
+  transition: background 0.15s;
+  }
+  .csv-btn:hover {
+  background: rgba(255,255,255,0.12);
+  }
 </style>
 </head>
 <body>
@@ -351,9 +366,13 @@
     <div>
       <div class="eyebrow"><span class="dot"></span>FortiSOAR &middot; Automation Requests</div>
       <h1>Playbook Request Log</h1>
+      <div style="margin: 12px 0;">
+      <a href="forti_products.html" target="_blank" style="margin-right: 10px; padding: 6px 14px; background:#21262d; color:#58a6ff; border:1px solid #30363d; border-radius:6px; text-decoration:none; font-size:13px;">Forti Products</a>
+      <a href="common_failed_requests.html" target="_blank" style="padding: 6px 14px; background:#21262d; color:#58a6ff; border:1px solid #30363d; border-radius:6px; text-decoration:none; font-size:13px;">Common Failed Requests</a>
+      </div>
       <div class="subhead">Every playbook generation request submitted across the org, with outcome and links to the resulting playbook.</div>
     </div>
-    <div class="last-updated" id="last-updated"></div>
+    <div class="last-updated" id="last-updated"></div><a href="http://10.37.34.7:8001/api/requests/csv" class="csv-btn" title="Download CSV">⬇ CSV</a>
   </header>
 
   <div class="stats">
