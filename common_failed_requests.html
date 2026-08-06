@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Common Failed Playbook Requests</title>
+<style>
+  body {
+    background: #0d1117;
+    color: #e6edf3;
+    font-family: -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    margin: 0;
+    padding: 40px;
+    max-width: 900px;
+  }
+  h1 { font-size: 22px; font-weight: 600; margin-bottom: 16px; }
+  h2 { font-size: 16px; font-weight: 600; margin-top: 32px; margin-bottom: 6px; color: #58a6ff; }
+  p { color: #c9d1d9; line-height: 1.6; font-size: 14px; }
+  .stats { display: flex; gap: 16px; margin: 24px 0; }
+  .stat { background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 16px 20px; text-align: center; flex: 1; }
+  .stat .num { font-size: 26px; font-weight: 700; color: #58a6ff; }
+  .stat .label { font-size: 12px; color: #8b949e; margin-top: 4px; }
+  table { width: 100%; border-collapse: collapse; background: #161b22; border-radius: 8px; overflow: hidden; margin-bottom: 8px; }
+  th { text-align: left; background: #21262d; color: #8b949e; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; padding: 10px 14px; border-bottom: 1px solid #30363d; }
+  td { padding: 10px 14px; border-bottom: 1px solid #21262d; font-size: 14px; color: #c9d1d9; }
+  td.count { color: #58a6ff; font-weight: 600; }
+</style>
+</head>
+<body>
+  <h1>Common Failed Playbook Requests</h1>
+  <p>Out of 268 total playbook requests, 65 failed, coming from 21 different people. Most of these failures are one-off attempts. But three specific requests failed repeatedly, and each time it was a different person hitting the same wall, not the same person retrying. That pattern is worth flagging separately, since it points to request types the system consistently cannot handle, rather than one-time user mistakes.</p>
+
+  <h2>1. FortiGate firewall rule ("demo_policy") &mdash; failed 7 times, 4 people</h2>
+  <table>
+    <tr><th>Requested By</th><th>Times Failed</th></tr>
+    <tr><td>Guoxiong Zou</td><td class="count">3</td></tr>
+    <tr><td>Muppirala Venkata Rahul</td><td class="count">2</td></tr>
+    <tr><td>Jeffrey Kong</td><td class="count">1</td></tr>
+    <tr><td>Faruk Yalcin</td><td class="count">1</td></tr>
+  </table>
+
+  <h2>2. WiFi disconnect event playbook &mdash; failed 3 times, 3 people</h2>
+  <table>
+    <tr><th>Requested By</th><th>Times Failed</th></tr>
+    <tr><td>Brady Liu</td><td class="count">1</td></tr>
+    <tr><td>An Ping Kwee</td><td class="count">1</td></tr>
+    <tr><td>Faruk Yalcin</td><td class="count">1</td></tr>
+  </table>
+
+  <h2>3. FortiRecon zero-day intelligence playbook &mdash; failed 3 times, 3 people</h2>
+  <table>
+    <tr><th>Requested By</th><th>Times Failed</th></tr>
+    <tr><td>An Ping Kwee</td><td class="count">1</td></tr>
+    <tr><td>Andy Lee</td><td class="count">1</td></tr>
+    <tr><td>Ricardo Guzman</td><td class="count">1</td></tr>
+  </table>
+
+  <h2>Conclusion</h2>
+  <p>These three request types are worth checking first, since fixing them would resolve failures for 10 different people at once (13 of the 65 failed attempts). The remaining failures are spread across individuals retrying their own requests and do not show the same cross-person pattern.</p>
+</body>
+</html>
