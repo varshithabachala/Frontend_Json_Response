@@ -15,44 +15,67 @@
   h1 { font-size: 22px; font-weight: 600; margin-bottom: 16px; }
   h2 { font-size: 16px; font-weight: 600; margin-top: 32px; margin-bottom: 6px; color: #58a6ff; }
   p { color: #c9d1d9; line-height: 1.6; font-size: 14px; }
-  .stats { display: flex; gap: 16px; margin: 24px 0; }
-  .stat { background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 16px 20px; text-align: center; flex: 1; }
-  .stat .num { font-size: 26px; font-weight: 700; color: #58a6ff; }
-  .stat .label { font-size: 12px; color: #8b949e; margin-top: 4px; }
   table { width: 100%; border-collapse: collapse; background: #161b22; border-radius: 8px; overflow: hidden; margin-bottom: 8px; }
   th { text-align: left; background: #21262d; color: #8b949e; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; padding: 10px 14px; border-bottom: 1px solid #30363d; }
   td { padding: 10px 14px; border-bottom: 1px solid #21262d; font-size: 14px; color: #c9d1d9; }
   td.count { color: #58a6ff; font-weight: 600; }
+  #loading { color: #8b949e; font-size: 14px; }
 </style>
 </head>
 <body>
   <h1>Common Failed Playbook Requests</h1>
-  <p>Out of 268 total playbook requests, 65 failed, coming from 21 different people. Most of these failures are one-off attempts. But three specific requests failed repeatedly, and each time it was a different person hitting the same wall, not the same person retrying. That pattern is worth flagging separately, since it points to request types the system consistently cannot handle, rather than one-time user mistakes.</p>
+  <p id="loading">Loading live data from the database...</p>
+  <div id="content" style="display:none;">
+    <p id="intro"></p>
+    <div id="patterns"></div>
+  </div>
 
-  <h2>1. FortiGate firewall rule ("demo_policy") &mdash; failed 7 times, 4 people</h2>
-  <table>
-    <tr><th>Requested By</th><th>Times Failed</th></tr>
-    <tr><td>Guoxiong Zou</td><td class="count">3</td></tr>
-    <tr><td>Muppirala Venkata Rahul</td><td class="count">2</td></tr>
-    <tr><td>Jeffrey Kong</td><td class="count">1</td></tr>
-    <tr><td>Faruk Yalcin</td><td class="count">1</td></tr>
-  </table>
+<script>
 
-  <h2>2. WiFi disconnect event playbook &mdash; failed 3 times, 3 people</h2>
-  <table>
-    <tr><th>Requested By</th><th>Times Failed</th></tr>
-    <tr><td>Brady Liu</td><td class="count">1</td></tr>
-    <tr><td>An Ping Kwee</td><td class="count">1</td></tr>
-    <tr><td>Faruk Yalcin</td><td class="count">1</td></tr>
-  </table>
+  const BACKEND_URL = "http://10.37.34.7:8001";
 
-  <h2>3. FortiRecon zero-day intelligence playbook &mdash; failed 3 times, 3 people</h2>
-  <table>
-    <tr><th>Requested By</th><th>Times Failed</th></tr>
-    <tr><td>An Ping Kwee</td><td class="count">1</td></tr>
-    <tr><td>Andy Lee</td><td class="count">1</td></tr>
-    <tr><td>Ricardo Guzman</td><td class="count">1</td></tr>
-  </table>
+  async function loadData() {
+    try {
+      const res = await fetch(`${BACKEND_URL}/api/common-failures`);
+      const data = await res.json();
 
+      document.getElementById('loading').style.display = 'none';
+      document.getElementById('content').style.display = 'block';
+
+      document.getElementById('intro').textContent =
+        `Out of ${data.total} total playbook requests, ${data.failed} failed, coming from ` +
+        `${data.people_affected} different people. ${data.shared_patterns} specific request(s) ` +
+        `failed repeatedly, each time by a different person, which points to request types the ` +
+        `system consistently cannot handle, rather than one-time user mistakes.`;
+
+      const patternsDiv = document.getElementById('patterns');
+      patternsDiv.innerHTML = '';
+
+      data.patterns.forEach((pattern, index) => {
+        const peopleCount = pattern.people.length;
+        const heading = document.createElement('h2');
+        heading.textContent = `${index + 1}. ${pattern.request_text.slice(0, 80)}${pattern.request_text.length > 80 ? '...' : ''} — failed ${pattern.total_failures} times, ${peopleCount} people`;
+        patternsDiv.appendChild(heading);
+
+        const table = document.createElement('table');
+        table.innerHTML = `
+          <tr><th>Requested By</th><th>Times Failed</th></tr>
+          ${pattern.people
+            .sort((a, b) => b.count - a.count)
+            .map(p => `<tr><td>${p.name}</td><td class="count">${p.count}</td></tr>`)
+            .join('')}
+        `;
+        patternsDiv.appendChild(table);
+      });
+
+    } catch (error) {
+      document.getElementById('loading').textContent =
+        'Could not load data. Make sure the backend server is running.';
+      console.error(error);
+    }
+  }
+
+  loadData();
+</script>
 </body>
 </html>
