@@ -11,78 +11,58 @@
     margin: 0;
     padding: 40px;
   }
-  h1 {
-    font-size: 22px;
-    font-weight: 600;
-    margin-bottom: 4px;
-  }
-  p.sub {
-    color: #8b949e;
-    margin-top: 0;
-    margin-bottom: 24px;
-    font-size: 14px;
-  }
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    background: #161b22;
-    border-radius: 8px;
-    overflow: hidden;
-  }
+  h1 { font-size: 22px; font-weight: 600; margin-bottom: 4px; }
+  p.sub { color: #8b949e; margin-top: 0; margin-bottom: 24px; font-size: 14px; }
+  table { width: 100%; border-collapse: collapse; background: #161b22; border-radius: 8px; overflow: hidden; }
   th {
-    text-align: left;
-    background: #21262d;
-    color: #8b949e;
-    font-size: 12px;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    padding: 12px 16px;
+    text-align: left; background: #21262d; color: #8b949e; font-size: 12px;
+    text-transform: uppercase; letter-spacing: 0.05em; padding: 12px 16px;
     border-bottom: 1px solid #30363d;
   }
-  td {
-    padding: 12px 16px;
-    border-bottom: 1px solid #21262d;
-    font-size: 14px;
-    vertical-align: top;
-  }
-  td.product {
-    font-weight: 600;
-    color: #58a6ff;
-    white-space: nowrap;
-    width: 220px;
-  }
-  td.names {
-    color: #c9d1d9;
-    line-height: 1.6;
-  }
-  tr:hover td {
-    background: #1c2129;
-  }
+  td { padding: 12px 16px; border-bottom: 1px solid #21262d; font-size: 14px; vertical-align: top; }
+  td.product { font-weight: 600; color: #58a6ff; white-space: nowrap; width: 220px; }
+  td.names { color: #c9d1d9; line-height: 1.6; }
+  tr:hover td { background: #1c2129; }
+  #loading { color: #8b949e; font-size: 14px; }
 </style>
 </head>
 <body>
   <h1>Forti Products &mdash; Requesters</h1>
   <p class="sub">Each Forti product and everyone who has requested a playbook involving it.</p>
-  <table>
+  <p id="loading">Loading live data from the database...</p>
+  <table id="productTable" style="display:none;">
     <tr><th>Product</th><th>Requesters</th></tr>
-      <tr><td class="product">FortiAIOPs</td><td class="names">Muppirala Venkata Rahul</td></tr>
-      <tr><td class="product">FortiAnalyzer</td><td class="names">An Ping Kwee, Brady Liu, Claus Bo Sorensen, Dylan_Spille, Harald Bauschke, Jeffrey Kong, Joel Kingston, Mark Borrow, Mike Poeschl, Mohamed Osama, Ricardo Guzman, Ricky Li, Simon Hoh</td></tr>
-      <tr><td class="product">FortiAppSec</td><td class="names">Markus Stoltz</td></tr>
-      <tr><td class="product">FortiDeceptor</td><td class="names">Lawrence Tsui</td></tr>
-      <tr><td class="product">FortiEDR</td><td class="names">Mohamed Taher, Ricardo Guzman</td></tr>
-      <tr><td class="product">FortiGate</td><td class="names">Abdul Azeem Arakkal, Abhay Dubey, Alessandro Vincenti, Amine G, An Ping Kwee, Andrew Butler, Andy Lee, Angel D. Dituro, Brady Liu, Carlos Castro, Claus Bo Sorensen, Daryn Utesbayev, David Link, Esakki Rajan Madakulathuran, Esger Mutsaerts1, Farouq Douma, Faruk Yalcin, Frederic Villata1, German VillavicencioDonoso, Guoxiong Zou, Hany Badawy Abouhaswa, Itay Goren, Jeffrey Clark, Jeffrey Kong, Jingyi Ma, Joel Kingston, Jonas Juliard, Juan Morais, Karim Abed, Khaled Al Razzak, Kishore Reddy T N, Lawrence Tsui, Li Xu, Luisa Lavano, Martin Johansson, Michael Wong, Ming Yin, Minh Hai Nguyen, Mohamed Osama, Mohamed Taher, Muppirala Venkata Rahul, Naoki Hiraga, Nick Henderson, Pavlin Koldamov-Fortinet, Renjie Xu, Ricardo Guzman, Rodrigo Micieli, Roy Reynolds1, Salim Abdul Baki, Simon Hoh, Teerapat Panyachonkool, Waheed Naidoo, Yazan Omar</td></tr>
-      <tr><td class="product">FortiGate-ips-signature</td><td class="names">Guoxiong Zou</td></tr>
-      <tr><td class="product">FortiGuard</td><td class="names">Abdul Azeem Arakkal, Alessandro Vincenti, An Ping Kwee, Andrew Butler, Andy Lee, David Link, Esger Mutsaerts1, Farouq Douma, Frederic Villata1, Hany Badawy Abouhaswa, Itay Goren, Jaehwan Kim, Jonas Juliard, Juan Morais, Karim Abed, Lawrence Tsui, Luisa Lavano, Martin Johansson, Michael Wong, Ming Yin, Minh Hai Nguyen, Muppirala Venkata Rahul, Naoki Hiraga, Pavlin Koldamov-Fortinet, Renjie Xu, Ricardo Guzman, Rodrigo Micieli, Roy Reynolds1, Salim Abdul Baki, Simon Hoh, Teerapat Panyachonkool</td></tr>
-      <tr><td class="product">FortiMAIL-demo</td><td class="names">Chong Jin Lim</td></tr>
-      <tr><td class="product">FortiManager</td><td class="names">An Ping Kwee, Eelco Duijker, German VillavicencioDonoso, Harald Bauschke, Joel Kingston, NNugera, Nick Henderson, Simon Hoh</td></tr>
-      <tr><td class="product">FortiNDR</td><td class="names">David Almeida Alcantara Ribeiro, Tanios Zabaneh</td></tr>
-      <tr><td class="product">FortiOS</td><td class="names">Nick Henderson, Simon Hoh</td></tr>
-      <tr><td class="product">FortiPAM</td><td class="names">Andreas Bawart1, Osama Salman</td></tr>
-      <tr><td class="product">FortiRecon</td><td class="names">Abdul Azeem Arakkal, Alessandro Vincenti, An Ping Kwee, Andrew Butler, Andy Lee, David Link, Esger Mutsaerts1, Farouq Douma, Firas Al Koussa, Frederic Villata1, Hany Badawy Abouhaswa, Itay Goren, Juan Morais, Karim Abed, Lawrence Tsui, Luisa Lavano, Martin Johansson, Michael Wong, Ming Yin, Minh Hai Nguyen, Muppirala Venkata Rahul, Naoki Hiraga, Pavlin Koldamov-Fortinet, Renjie Xu, Ricardo Guzman, Rodrigo Micieli, Roy Reynolds1, Salim Abdul Baki, Simon Hoh, Stamatis Mandilas, Teerapat Panyachonkool</td></tr>
-      <tr><td class="product">FortiSIEM</td><td class="names">Arun Pal, Stamatis Mandilas</td></tr>
-      <tr><td class="product">FortiSOAR</td><td class="names">Abdul Azeem Arakkal, Abhay Dubey, Alessandro Vincenti, An Ping Kwee, Andreas Bawart1, Andrew Butler, Andy Lee, Angel D. Dituro, Brady Liu, Claus Bo Sorensen, Daryn Utesbayev, David Link, Esger Mutsaerts1, Farouq Douma, Faruk Yalcin, Firas Al Koussa, Frederic Villata1, German VillavicencioDonoso, Guoxiong Zou, Hany Badawy Abouhaswa, Harald Bauschke, Itay Goren, Jeffrey Kong, Joel Kingston, Juan Morais, Karim Abed, Lawrence Tsui, Luisa Lavano, Martin Johansson, Michael Wong, Ming Yin, Minh Hai Nguyen, Muppirala Venkata Rahul, NNugera, Naoki Hiraga, Osama Salman, Pavlin Koldamov-Fortinet, Renjie Xu, Ricardo Guzman, Rodrigo Micieli, Roy Reynolds1, Salim Abdul Baki, Simon Hoh, Stamatis Mandilas, Teerapat Panyachonkool, Zoltan@Fortinet.com</td></tr>
-      <tr><td class="product">FortiSandbox</td><td class="names">Andrew Butler, Tanios Zabaneh</td></tr>
-      <tr><td class="product">Fortinet</td><td class="names">Andrew Butler</td></tr>
+    <tbody id="tableBody"></tbody>
   </table>
+
+<script>
+
+  const BACKEND_URL = "http://10.37.34.7:8001";
+
+  async function loadProducts() {
+    try {
+      const res = await fetch(`${BACKEND_URL}/api/forti-products`);
+      const data = await res.json();
+
+      document.getElementById('loading').style.display = 'none';
+      document.getElementById('productTable').style.display = 'table';
+
+      const tableBody = document.getElementById('tableBody');
+      tableBody.innerHTML = data.products.map(p => `
+        <tr>
+          <td class="product">${p.product}</td>
+          <td class="names">${p.requesters.join(', ')}</td>
+        </tr>
+      `).join('');
+
+    } catch (error) {
+      document.getElementById('loading').textContent =
+        'Could not load data. Make sure the backend server is running.';
+      console.error(error);
+    }
+  }
+
+  loadProducts();
+</script>
 </body>
 </html>
