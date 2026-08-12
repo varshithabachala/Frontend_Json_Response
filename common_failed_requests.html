@@ -19,6 +19,7 @@
   th { text-align: left; background: #21262d; color: #8b949e; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; padding: 10px 14px; border-bottom: 1px solid #30363d; }
   td { padding: 10px 14px; border-bottom: 1px solid #21262d; font-size: 14px; color: #c9d1d9; }
   td.count { color: #58a6ff; font-weight: 600; }
+  td.request-hover { cursor: help; border-bottom: 1px dotted #58a6ff; }
   #loading { color: #8b949e; font-size: 14px; }
 </style>
 </head>
@@ -27,11 +28,18 @@
   <p id="loading">Loading live data from the database...</p>
   <div id="content" style="display:none;">
     <p id="intro"></p>
+
+    <h2>Requests that failed for more than one person</h2>
     <div id="patterns"></div>
+
+    <h2 id="otherHeading"></h2>
+    <table id="otherTable" style="display:none;">
+      <tr><th>Request</th><th>Requested By</th><th>Times Failed</th></tr>
+      <tbody id="otherTableBody"></tbody>
+    </table>
   </div>
 
 <script>
-
   const BACKEND_URL = "http://10.37.34.7:8001";
 
   async function loadData() {
@@ -45,8 +53,8 @@
       document.getElementById('intro').textContent =
         `Out of ${data.total} total playbook requests, ${data.failed} failed, coming from ` +
         `${data.people_affected} different people. ${data.shared_patterns} specific request(s) ` +
-        `failed repeatedly, each time by a different person, which points to request types the ` +
-        `system consistently cannot handle, rather than one-time user mistakes.`;
+        `failed repeatedly, each time by a different person. The remaining ${data.other_failures_count} ` +
+        `failures below were each hit by only one person.`;
 
       const patternsDiv = document.getElementById('patterns');
       patternsDiv.innerHTML = '';
@@ -54,7 +62,7 @@
       data.patterns.forEach((pattern, index) => {
         const peopleCount = pattern.people.length;
         const heading = document.createElement('h2');
-        heading.textContent = `${index + 1}. ${pattern.request_text.slice(0, 80)}${pattern.request_text.length > 80 ? '...' : ''} — failed ${pattern.total_failures} times, ${peopleCount} people`;
+        heading.textContent = `${index + 1}. Failed ${pattern.total_failures} times, ${peopleCount} people`;
         patternsDiv.appendChild(heading);
 
         const table = document.createElement('table');
@@ -62,17 +70,46 @@
           <tr><th>Requested By</th><th>Times Failed</th></tr>
           ${pattern.people
             .sort((a, b) => b.count - a.count)
-            .map(p => `<tr><td>${p.name}</td><td class="count">${p.count}</td></tr>`)
+            .map(p => `<tr>
+              <td class="request-hover" title="${escapeAttr(pattern.request_text)}">${p.name}</td>
+              <td class="count">${p.count}</td>
+            </tr>`)
             .join('')}
         `;
         patternsDiv.appendChild(table);
       });
+
+      document.getElementById('otherHeading').textContent =
+        `Other failures — one person each (${data.other_failures_count})`;
+
+      if (data.other_failures.length > 0) {
+        document.getElementById('otherTable').style.display = 'table';
+        const shortText = (t) => t.length > 70 ? t.slice(0, 70) + '...' : t;
+
+        document.getElementById('otherTableBody').innerHTML = data.other_failures.map(o => `
+          <tr>
+            <td class="request-hover" title="${escapeAttr(o.request_text)}">${escapeHtml(shortText(o.request_text))}</td>
+            <td>${escapeHtml(o.name)}</td>
+            <td class="count">${o.count}</td>
+          </tr>
+        `).join('');
+      }
 
     } catch (error) {
       document.getElementById('loading').textContent =
         'Could not load data. Make sure the backend server is running.';
       console.error(error);
     }
+  }
+
+  function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  function escapeAttr(str) {
+    return (str || '').replace(/"/g, '&quot;');
   }
 
   loadData();
