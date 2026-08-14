@@ -50,7 +50,7 @@
       const tableBody = document.getElementById('tableBody');
       tableBody.innerHTML = data.products.map(p => `
         <tr>
-          <td class="product">${p.product}</td>
+          <td class="product"><a href="product_requests.html?product=${encodeURIComponent(p.product)}" style="color:#58a6ff; text-decoration:none;">${p.product}</a></td>
           <td class="names">${p.requesters.join(', ')}</td>
         </tr>
       `).join('');
