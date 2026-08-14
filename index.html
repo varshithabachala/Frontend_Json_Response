@@ -345,19 +345,43 @@
     .last-updated{text-align:left;}
   }
   .csv-btn {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   margin-top: 8px;
-  padding: 6px 12px;
+  padding: 6px 14px;
+  font-family: var(--mono);
   font-size: 12px;
-  color: var(--text, #e6edf3);
-  background: rgba(255,255,255,0.06);
-  border: 1px solid rgba(255,255,255,0.15);
   border-radius: 6px;
   text-decoration: none;
-  transition: background 0.15s;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
   }
-  .csv-btn:hover {
-  background: rgba(255,255,255,0.12);
+  .btn-download {
+  color: #58a6ff;
+  background: rgba(88,166,255,0.08);
+  border-color: rgba(88,166,255,0.3);
+  }
+  .btn-download:hover {
+  background: rgba(88,166,255,0.16);
+  }
+  .btn-upload {
+  color: var(--accent);
+  background: rgba(255,180,84,0.08);
+  border-color: rgba(255,180,84,0.3);
+  }
+  .btn-upload:hover {
+  background: rgba(255,180,84,0.16);
+  }
+  .btn-delete {
+  color: var(--failed);
+  background: rgba(255,107,107,0.08);
+  border-color: rgba(255,107,107,0.3);
+  display: none;
+  }
+  .btn-delete:hover {
+  background: rgba(255,107,107,0.16);
   }
 </style>
 </head>
@@ -371,11 +395,12 @@
       <div style="margin: 12px 0;">
       <a href="forti_products.html" style="margin-right: 10px; padding: 6px 14px; background:#21262d; color:#58a6ff; border:1px solid #30363d; border-radius:6px; text-decoration:none; font-size:13px;">Forti Products</a>
       <a href="common_failed_requests.html" style="padding: 6px 14px; background:#21262d; color:#58a6ff; border:1px solid #30363d; border-radius:6px; text-decoration:none; font-size:13px;">Common Failed Requests</a>
+      <a href="http://10.37.34.7:8001/api/requests/csv" class="csv-btn btn-download" title="Download CSV">⬇ CSV</a>
       <input type="file" id="jsonFileInput" accept=".json" style="display:none;">
-      <button onclick="document.getElementById('jsonFileInput').click()" class="csv-btn" title="Upload JSON">⬆ Upload JSON</button>
+      <button onclick="document.getElementById('jsonFileInput').click()" class="csv-btn btn-upload" title="Upload JSON">⬆ Upload JSON</button>
+      <button id="deleteUploadBtn" onclick="deleteLastUpload()" class="csv-btn btn-delete" title="Delete last upload">🗑 Delete this upload</button>
       <span id="uploadStatus" style="font-size:11px; color:var(--muted-dim); margin-left:8px;"></span>
       </div>
-      <div class="subhead">Every playbook generation request submitted across the org, with outcome and links to the resulting playbook.</div>
     </div>
     <div class="last-updated" id="last-updated"></div>
   </header>
@@ -450,6 +475,7 @@
 
 const API_BASE = 'http://10.37.34.7:8001';
 let requests = [];
+let lastUploadIds = [];
 
 document.getElementById('jsonFileInput').addEventListener('change', async function(e) {
   const file = e.target.files[0];
@@ -469,6 +495,8 @@ document.getElementById('jsonFileInput').addEventListener('change', async functi
     if (!res.ok) throw new Error('Upload failed');
     const result = await res.json();
     statusEl.textContent = `Added: ${result.added}, Updated: ${result.updated}`;
+    lastUploadIds = result.added_ids || [];
+    document.getElementById('deleteUploadBtn').style.display = lastUploadIds.length ? 'inline-flex' : 'none';
     await loadRequests();
   } catch (err) {
     statusEl.textContent = 'Upload failed.';
@@ -476,6 +504,29 @@ document.getElementById('jsonFileInput').addEventListener('change', async functi
   }
   e.target.value = '';
 });
+
+async function deleteLastUpload() {
+  if (lastUploadIds.length === 0) return;
+  const confirmDelete = confirm(`Delete ${lastUploadIds.length} record(s) from this upload?`);
+  if (!confirmDelete) return;
+
+  const statusEl = document.getElementById('uploadStatus');
+  try {
+    const res = await fetch(`${API_BASE}/api/requests/bulk-delete`, {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ids: lastUploadIds })
+    });
+    const result = await res.json();
+    statusEl.textContent = `Deleted ${result.deleted} record(s).`;
+    document.getElementById('deleteUploadBtn').style.display = 'none';
+    lastUploadIds = [];
+    await loadRequests();
+  } catch (err) {
+    statusEl.textContent = 'Delete failed.';
+    console.error(err);
+  }
+}
 
 async function loadRequests() {
   try {
